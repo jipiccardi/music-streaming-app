@@ -1,22 +1,22 @@
+import 'package:music_app/domain/song.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
-import '../../../domain/song.dart';
 
-class SongsListState {
+class SongPlayerState {
   final BaseScreenState screenState;
-  final List<Song> songs;
-
-  const SongsListState({
+  final Song? song;
+  
+  const SongPlayerState({
     this.screenState = const BaseScreenState.idle(),
-    this.songs = const[]
+    this.song,
   });
 
-  SongsListState copyWith({
+  SongPlayerState copyWith({
     BaseScreenState? screenState,
-    List<Song>? songs,
+    Song? song,
   }){
-    return SongsListState(
+    return SongPlayerState(
       screenState: screenState ?? this.screenState,
-      songs: songs ?? this.songs,
+      song: song ?? this.song,
     );
-  }
+  } 
 }

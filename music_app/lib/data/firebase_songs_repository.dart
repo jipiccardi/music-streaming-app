@@ -1,25 +1,25 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:music_app/domain/song.dart';
 import 'package:music_app/domain/songs_repository.dart';
 
 class FirebaseSongsRepository implements SongsRepository {
-  // TODO implement with firebase
+  final FirebaseFirestore _firestore;
 
-  final List<Song> _songs = [
-    Song(id: '1', title: 'Snow', filePath: "...", genre: "..."),
-    Song(id: '2', title: 'Aeroplane', filePath: "...", genre: "..."),
-    Song(id: '1', title: 'Snow', filePath: "...", genre: "..."),
-    Song(id: '2', title: 'Aeroplane', filePath: "...", genre: "..."),
-    Song(id: '1', title: 'Snow', filePath: "...", genre: "..."),
-    Song(id: '2', title: 'Aeroplane', filePath: "...", genre: "..."),
-    Song(id: '1', title: 'Snow', filePath: "...", genre: "..."),
-    Song(id: '2', title: 'Aeroplane', filePath: "...", genre: "..."),
-    Song(id: '1', title: 'Snow', filePath: "...", genre: "..."),
-    Song(id: '2', title: 'Aeroplane', filePath: "...", genre: "..."),
-  ];
+  FirebaseSongsRepository({FirebaseFirestore? firestore})
+      : _firestore = firestore ?? FirebaseFirestore.instance;
 
   @override
-  Future<List<Song>> getAllSongs() => Future.delayed(
-        const Duration(seconds: 2),
-        () => _songs,
-      );
+  Future<List<Song>> getAllSongs() async {
+    final querySnapshot = await _firestore.collection('songs').get();
+
+    final res = querySnapshot.docs.map((doc) {
+      return Song.fromFirestore(doc.data(), doc.id);
+    }).toList();
+
+    log('Hola');
+    log(res.length.toString());
+    return res;
+  }
 }

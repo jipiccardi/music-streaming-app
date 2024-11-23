@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'package:go_router/go_router.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_app/domain/song.dart';
@@ -43,12 +46,16 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
             loading: () => const Center(
                   child: CircularProgressIndicator(),
                 ),
-            error: (error) => Center(
-                  child: Text('Error: $error'),
-                )));
+            error: (error) {
+              log('Error: $error');
+              return Center(
+                child: Text('Error: $error'),
+              );
+            }));
   }
 
   void _onSongTap(BuildContext context, String songId) async {
+
     return;
   }
 }

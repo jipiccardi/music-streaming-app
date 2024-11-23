@@ -17,17 +17,12 @@ class SongsListNotifier extends Notifier<SongsListState> {
     state = state.copyWith(
       screenState: const BaseScreenState.loading(),
     );
-    await  loadSongs();
-  }
 
-  Future<void> loadSongs() async {
     try {
       final songs = await songsRepository.getAllSongs();
       state = state.copyWith(
-        screenState: const BaseScreenState.idle(),
-        songs: songs
-      );
-    } catch(error) {
+          screenState: const BaseScreenState.idle(), songs: songs);
+    } catch (error) {
       state = state.copyWith(
         screenState: BaseScreenState.error(error.toString()),
       );
