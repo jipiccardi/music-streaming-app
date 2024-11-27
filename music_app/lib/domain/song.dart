@@ -5,7 +5,7 @@ class Song {
   final String? artist;
   final String? coverArt;
   final String filePath;
-  final String genre;
+  final String? genre;
 
   Song({
     required this.id,
@@ -14,7 +14,7 @@ class Song {
     this.artist,
     this.coverArt,
     required this.filePath,
-    required this.genre,
+    this.genre,
   });
 
   factory Song.fromFirestore(Map<String, dynamic> data, String id) {

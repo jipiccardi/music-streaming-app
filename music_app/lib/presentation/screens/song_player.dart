@@ -22,9 +22,13 @@ class _SongPlayerScreenState extends ConsumerState<SongPlayerScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ref
+      await ref
           .read(songPlayerViewModelProvider(widget.songId).notifier)
           .setSong(widget.songId);
+
+      ref
+          .read(songPlayerViewModelProvider(widget.songId).notifier)
+          .tooglePlayStatus();
     });
   }
 
