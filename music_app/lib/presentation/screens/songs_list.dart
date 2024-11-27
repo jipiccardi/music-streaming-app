@@ -1,9 +1,10 @@
 import 'dart:developer';
-import 'package:go_router/go_router.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:music_app/domain/song.dart';
+import 'package:music_app/presentation/screens/song_player.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
 import 'package:music_app/presentation/widgets/song_item.dart';
@@ -40,7 +41,7 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
             idle: () {
               return _SongsList(
                 songs: state.songs,
-                onSongTap: (song) => _onSongTap(context, song.id),
+                onSongTap: (song) => _onSongTap(context, song.id, state.songs.map((song) => song.id).toList()),
               );
             },
             loading: () => const Center(
@@ -54,8 +55,8 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
             }));
   }
 
-  void _onSongTap(BuildContext context, String songId) async {
-
+  void _onSongTap(BuildContext context, String songId, List<String> playlist) async {
+    context.pushNamed(SongPlayerScreen.name, pathParameters: {'id': songId},extra: playlist);
     return;
   }
 }
