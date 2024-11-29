@@ -22,6 +22,7 @@ dependencies:
   equatable: ^2.0.5
   flutter_expandable_fab: ^2.3.0
   just_audio: ^0.9.42
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_test:

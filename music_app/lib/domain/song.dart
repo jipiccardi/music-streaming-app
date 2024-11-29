@@ -6,6 +6,7 @@ class Song {
   final String? coverArt;
   final String filePath;
   final String? genre;
+  bool isPlaying = false;
 
   Song({
     required this.id,
