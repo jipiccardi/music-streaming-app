@@ -8,7 +8,6 @@ import 'package:music_app/presentation/screens/song_player.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
 import 'package:music_app/presentation/widgets/song_item.dart';
-import 'package:music_app/presentation/viewmodels/notifiers/song_player_notifier.dart';
 
 class SongsListScreen extends ConsumerStatefulWidget {
   static const name = 'SongsListScreen';

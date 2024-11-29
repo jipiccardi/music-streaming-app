@@ -23,6 +23,10 @@ class _SongPlayerScreenState extends ConsumerState<SongPlayerScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref
+          .read(songPlayerViewModelProvider(widget.songId).notifier)
+          .onSongFinish();
+
       await ref
           .read(songPlayerViewModelProvider(widget.songId).notifier)
           .setSong(widget.songId);
@@ -44,9 +48,12 @@ class _SongPlayerScreenState extends ConsumerState<SongPlayerScreen> {
           }
           return _SongPlayer(
             song: state.song!,
+            isPlaying: state.isPlaying!,
             playAndStopSong: (song) => _playAndStopSong(song),
             nextSong: (id) => _nextSong(id),
             previousSong: (id) => _previousSong(id),
+            forward: () => forward(),
+            backward: () => backward(),
           );
         },
         loading: () => const Center(
@@ -92,19 +99,35 @@ class _SongPlayerScreenState extends ConsumerState<SongPlayerScreen> {
         .read(songPlayerViewModelProvider(widget.songId).notifier)
         .setSong(previousId);
   }
+
+  Future<void> forward() async {
+    ref.read(songPlayerViewModelProvider(widget.songId).notifier).fastFoward();
+  }
+
+  Future<void> backward() async {
+    ref.read(songPlayerViewModelProvider(widget.songId).notifier).backWard();
+  }
 }
 
 class _SongPlayer extends StatelessWidget {
-  const _SongPlayer(
-      {required this.song,
-      required this.playAndStopSong,
-      required this.nextSong,
-      required this.previousSong});
+  const _SongPlayer({
+    required this.song,
+    required this.isPlaying,
+    required this.playAndStopSong,
+    required this.nextSong,
+    required this.previousSong,
+    required this.forward,
+    required this.backward,
+  });
 
   final Song song;
+  final bool isPlaying;
+
   final Future<void> Function(Song) playAndStopSong;
   final Future<void> Function(String) nextSong;
   final Future<void> Function(String) previousSong;
+  final Future<void> Function() forward;
+  final Future<void> Function() backward;
 
   @override
   Widget build(BuildContext context) {
@@ -166,33 +189,59 @@ class _SongPlayer extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 40), 
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          padding: const EdgeInsets.only(bottom: 40),
+          child: Column(
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  previousSong(song.id);
-                },
-                child: const FaIcon(FontAwesomeIcons.backward, size: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      backward();
+                    },
+                    child: const FaIcon(FontAwesomeIcons.arrowRotateLeft,
+                        size: 30),
+                  ),
+                  const SizedBox(width: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      forward();
+                    },
+                    child: const FaIcon(FontAwesomeIcons.arrowRotateRight,
+                        size: 30),
+                  ),
+                ],
               ),
-              const SizedBox(width: 40),
-              ElevatedButton(
-                onPressed: () {
-                  playAndStopSong(song);
-                },
-                child: FaIcon(
-                    song.isPlaying
-                        ? FontAwesomeIcons.pause
-                        : FontAwesomeIcons.play,
-                    size: 50),
-              ),
-              const SizedBox(width: 40),
-              ElevatedButton(
-                onPressed: () {
-                  nextSong(song.id);
-                },
-                child: const FaIcon(FontAwesomeIcons.forward, size: 30),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      previousSong(song.id);
+                    },
+                    child:
+                        const FaIcon(FontAwesomeIcons.backwardStep, size: 35),
+                  ),
+                  const SizedBox(width: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      playAndStopSong(song);
+                    },
+                    child: FaIcon(
+                        isPlaying
+                            ? FontAwesomeIcons.pause
+                            : FontAwesomeIcons.play,
+                        size: 50),
+                  ),
+                  const SizedBox(width: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      nextSong(song.id);
+                    },
+                    child: const FaIcon(FontAwesomeIcons.forwardStep, size: 35),
+                  ),
+                ],
               ),
             ],
           ),

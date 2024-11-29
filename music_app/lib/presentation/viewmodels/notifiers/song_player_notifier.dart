@@ -17,20 +17,19 @@ class SongPlayerNotifier
 
   @override
   SongPlayerState build(String arg) {
-    return const SongPlayerState();
+    return const SongPlayerState(isPlaying: false);
   }
 
   Future<void> setSong(String songId) async {
     state = state.copyWith(screenState: const BaseScreenState.loading());
     try {
-      log('Updating Song');
-
       final song = await songsRepository.getSongById(songId);
       await player.setAudioSource(AudioSource.uri(Uri.parse(song!.filePath)));
       player.play();
-      song.isPlaying = true;
-      state =
-          state.copyWith(screenState: const BaseScreenState.idle(), song: song);
+      state = state.copyWith(
+          screenState: const BaseScreenState.idle(),
+          song: song,
+          isPlaying: true);
     } catch (error) {
       state = state.copyWith(
         screenState: BaseScreenState.error(error.toString()),
@@ -41,12 +40,10 @@ class SongPlayerNotifier
   Future<void> tooglePlayStatus(Song song) async {
     if (player.playing) {
       player.pause();
-      song.isPlaying = false;
-      state = state.copyWith(song: song);
+      state = state.copyWith(song: song, isPlaying: false);
     } else {
       player.play();
-      song.isPlaying = true;
-      state = state.copyWith(song: song);
+      state = state.copyWith(song: song, isPlaying: true);
     }
   }
 
@@ -54,8 +51,21 @@ class SongPlayerNotifier
     player.stop();
   }
 
-  Future<void> enableNextSong() async{
-    player.playerState.processingState == ProcessingState.completed; 
+  Future<void> fastFoward() async {
+    player.seek(Duration(seconds: player.position.inSeconds + 10));
+  }
 
+  Future<void> backWard() async {
+    player.seek(Duration(seconds: player.position.inSeconds - 10));
+  }
+
+  Future<void> onSongFinish() async {
+    player.playerStateStream.listen((event) {
+      if (event.processingState == ProcessingState.completed) {
+        player.stop();
+        player.seek(Duration.zero);
+        state = state.copyWith(isPlaying: false);
+      }
+    });
   }
 }
