@@ -84,9 +84,23 @@ class _SongsList extends StatelessWidget {
       itemCount: songs.length,
       itemBuilder: (context, index) {
         final song = songs[index];
-        return SongItem(
-          song: song,
-          onTap: () => onSongTap(song),
+        return ListTile(
+          leading: song.coverArt != null
+              ? FadeInImage.assetNetwork(
+                  placeholder: 'assets/images/default_art_cover.png',
+                  image: song.coverArt!,
+                  width: 30,
+                  height: 30,
+                )
+              : Image.asset(
+                  'assets/images/default_art_cover.png',
+                  width: 30,
+                  height: 30,
+                ),
+          title: SongItem(
+            song: song,
+            onTap: () => onSongTap(song),
+          ),
         );
       },
     );
