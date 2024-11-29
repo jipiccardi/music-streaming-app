@@ -29,4 +29,12 @@ class Song {
       genre: data['genre'],
     );
   }
+
+  String getMetadata() {
+    List<String> metadata = [];
+    genre != null && genre!.isNotEmpty ? metadata.add('Genre: $genre') : null;
+    album != null && album!.isNotEmpty ? metadata.add('Album: $album') : null;
+    artist != null && artist!.isNotEmpty ? metadata.add('Artist: $artist') : null;
+    return metadata.join('\n');
+  }
 }

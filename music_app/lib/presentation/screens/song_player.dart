@@ -108,7 +108,6 @@ class _SongPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -118,15 +117,48 @@ class _SongPlayer extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
               Text(
-                song.title, // Song name
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                song.title,
+                style:
+                    const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Center(
-                child: Image.asset(
-                  'assets/images/default_art_cover.png', // Asset image path
-                  width: 150,
-                  height: 150,
+                child: SizedBox(
+                  width: 500,
+                  height: 500,
+                  child: PageView(
+                    children: [
+                      Center(
+                        child: song.coverArt != null
+                            ? FadeInImage.assetNetwork(
+                                placeholder:
+                                    'assets/images/default_art_cover.png',
+                                image: song.coverArt!,
+                                width: 300,
+                                height: 300,
+                              )
+                            : Image.asset(
+                                'assets/images/default_art_cover.png',
+                                width: 300,
+                                height: 300,
+                              ),
+                      ),
+                      if (song.getMetadata().isNotEmpty)
+                        Center(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              song.getMetadata(),
+                              style: const TextStyle(
+                                  fontSize: 16, fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -134,7 +166,7 @@ class _SongPlayer extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.only(bottom: 40), 
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -144,17 +176,18 @@ class _SongPlayer extends StatelessWidget {
                 },
                 child: const FaIcon(FontAwesomeIcons.backward, size: 30),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 40),
               ElevatedButton(
                 onPressed: () {
                   playAndStopSong(song);
                 },
-                child: FaIcon(song.isPlaying
-                    ? FontAwesomeIcons.pause
-                    : FontAwesomeIcons.play,
-                    size: 30),
+                child: FaIcon(
+                    song.isPlaying
+                        ? FontAwesomeIcons.pause
+                        : FontAwesomeIcons.play,
+                    size: 50),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 40),
               ElevatedButton(
                 onPressed: () {
                   nextSong(song.id);

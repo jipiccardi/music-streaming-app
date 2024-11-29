@@ -8,7 +8,6 @@ import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/states/song_player_state.dart';
 import 'package:music_app/domain/song.dart';
 
-// TODO move to a better singleton
 final player = AudioPlayer();
 
 class SongPlayerNotifier
@@ -49,5 +48,14 @@ class SongPlayerNotifier
       song.isPlaying = true;
       state = state.copyWith(song: song);
     }
+  }
+
+  Future<void> stopSong() async {
+    player.stop();
+  }
+
+  Future<void> enableNextSong() async{
+    player.playerState.processingState == ProcessingState.completed; 
+
   }
 }

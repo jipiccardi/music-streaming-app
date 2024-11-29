@@ -8,6 +8,7 @@ import 'package:music_app/presentation/screens/song_player.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
 import 'package:music_app/presentation/widgets/song_item.dart';
+import 'package:music_app/presentation/viewmodels/notifiers/song_player_notifier.dart';
 
 class SongsListScreen extends ConsumerStatefulWidget {
   static const name = 'SongsListScreen';
@@ -41,7 +42,8 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
             idle: () {
               return _SongsList(
                 songs: state.songs,
-                onSongTap: (song) => _onSongTap(context, song.id, state.songs.map((song) => song.id).toList()),
+                onSongTap: (song) => _onSongTap(context, song.id,
+                    state.songs.map((song) => song.id).toList()),
               );
             },
             loading: () => const Center(
@@ -55,8 +57,15 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
             }));
   }
 
-  void _onSongTap(BuildContext context, String songId, List<String> playlist) async {
-    context.pushNamed(SongPlayerScreen.name, pathParameters: {'id': songId},extra: playlist);
+  void _onSongTap(
+      BuildContext context, String songId, List<String> playlist) async {
+    final playerNotifier = ref.read(songPlayerViewModelProvider('').notifier);
+    await context
+        .pushNamed(SongPlayerScreen.name,
+            pathParameters: {'id': songId}, extra: playlist)
+        .then((_) {
+      playerNotifier.stopSong();
+    });
     return;
   }
 }
