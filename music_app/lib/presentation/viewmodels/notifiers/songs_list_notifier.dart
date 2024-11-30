@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:music_app/domain/songs_repository.dart';
+import 'package:music_app/data/repositories/songs_repository.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/states/songs_list_state.dart';
-import '../../../data/providers.dart';
+import '../../../data/repositories/providers.dart';
 
 class SongsListNotifier extends Notifier<SongsListState> {
   late final SongsRepository songsRepository =

@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:music_app/data/providers.dart';
-import 'package:music_app/domain/songs_repository.dart';
+import 'package:music_app/data/repositories/providers.dart';
+import 'package:music_app/data/repositories/songs_repository.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/states/song_player_state.dart';
-import 'package:music_app/domain/song.dart';
+import 'package:music_app/data/models/song.dart';
 
 final player = AudioPlayer();
 

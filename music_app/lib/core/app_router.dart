@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:music_app/presentation/screens/song_player.dart';
+import '../presentation/screens/playlist.dart';
 import '../presentation/screens/songs_list.dart';
 
 final appRouter = GoRouter(
@@ -21,6 +22,11 @@ final appRouter = GoRouter(
         songId: state.pathParameters['id'] ?? '',
         playlist: state.extra as List<String>,
       ),
-    )
+    ),
+    // GoRoute(
+    //   path: '/playlist',
+    //   name: PlaylistScreen.name,
+    //   builder: (context, state) => const PlaylistScreen(),
+    // ),
   ],
 );

@@ -1,5 +1,5 @@
 import 'package:music_app/presentation/utils/base_screen_state.dart';
-import '../../../domain/song.dart';
+import '../../../data/models/song.dart';
 
 class SongsListState {
   final BaseScreenState screenState;

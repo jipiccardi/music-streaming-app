@@ -1,6 +1,10 @@
+import '../models/song.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:music_app/domain/song.dart';
-import 'package:music_app/domain/songs_repository.dart';
+
+abstract interface class SongsRepository {
+  Future<List<Song>> getAllSongs();
+  Future<Song?> getSongById(String id);
+}
 
 class FirebaseSongsRepository implements SongsRepository {
   final FirebaseFirestore _firestore;
