@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:music_app/data/models/song.dart';
+import 'package:music_app/presentation/screens/playlists_list.dart';
 import 'package:music_app/presentation/screens/song_player.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
@@ -50,7 +51,9 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
                 );
               },
               loading: () => const Center(
-                child: CircularProgressIndicator(color: Colors.white,),
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
               ),
               error: (error) {
                 log('Error: $error');
@@ -71,11 +74,11 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
                 label: 'Playlist',
               ),
             ],
-            currentIndex: 0, 
+            currentIndex: 0,
             selectedItemColor: Colors.white, // Material Design color
             onTap: (index) {
               if (index == 1) {
-                log('hola');
+                context.pushReplacementNamed(PlaylistScreen.name);
               }
             },
           ),
@@ -112,23 +115,9 @@ class _SongsList extends StatelessWidget {
       itemCount: songs.length,
       itemBuilder: (context, index) {
         final song = songs[index];
-        return ListTile(
-          leading: song.coverArt != null
-              ? FadeInImage.assetNetwork(
-                  placeholder: 'assets/images/default_art_cover.png',
-                  image: song.coverArt!,
-                  width: 30,
-                  height: 30,
-                )
-              : Image.asset(
-                  'assets/images/default_art_cover.png',
-                  width: 30,
-                  height: 30,
-                ),
-          title: SongItem(
-            song: song,
-            onTap: () => onSongTap(song),
-          ),
+        return SongItem(
+          song: song,
+          onTap: () => onSongTap(song),
         );
       },
     );

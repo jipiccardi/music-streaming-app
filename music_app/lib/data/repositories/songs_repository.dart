@@ -1,5 +1,5 @@
+import 'package:music_app/services/firestore_database_service.dart';
 import '../models/song.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract interface class SongsRepository {
   Future<List<Song>> getAllSongs();
@@ -7,10 +7,8 @@ abstract interface class SongsRepository {
 }
 
 class FirebaseSongsRepository implements SongsRepository {
-  final FirebaseFirestore _firestore;
+  final _firestore = FirestoreDatabase().firestore;
 
-  FirebaseSongsRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
 
   @override
   Future<List<Song>> getAllSongs() async {

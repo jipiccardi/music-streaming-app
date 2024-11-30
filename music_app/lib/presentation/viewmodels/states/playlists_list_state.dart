@@ -1,20 +1,20 @@
 import 'package:music_app/data/models/playlist.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 
-class PlaylistState {
+class PlaylistsState {
   final BaseScreenState screenState;
   final List<Playlist> playlists;
 
-  const PlaylistState({
+  const PlaylistsState({
     this.screenState = const BaseScreenState.idle(),
-    this.playlists = const [],
+    this.playlists = const[]
   });
 
-  PlaylistState copyWith({
+  PlaylistsState copyWith({
     BaseScreenState? screenState,
     List<Playlist>? playlists,
-  }) {
-    return PlaylistState(
+  }){
+    return PlaylistsState(
       screenState: screenState ?? this.screenState,
       playlists: playlists ?? this.playlists,
     );

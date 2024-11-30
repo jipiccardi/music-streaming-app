@@ -19,7 +19,7 @@ class Playlist {
       userId: data['userId'],
       name: data['name'],
       coverArt: data['coverArt'],
-      songs: List<String>.from(data['songs']),
+      songs: data['songs'] != null ? List<String>.from(data['songs']) : [],
     );
   }
 }
