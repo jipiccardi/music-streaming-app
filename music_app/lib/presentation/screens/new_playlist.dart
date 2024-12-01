@@ -5,17 +5,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:music_app/presentation/screens/playlists_list.dart';
-import 'package:music_app/presentation/screens/songs_list.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
 
 class NewPlaylistScreen extends ConsumerStatefulWidget {
   static const name = 'NewPlaylistScreen';
 
-  const NewPlaylistScreen({super.key, required this.origin});
+  const NewPlaylistScreen(
+      {super.key, required this.action, required this.paylistSongs, required this.playlistId});
 
-  // sadly, it will be easier to have a edit playlist screen... or not?
-  final String origin;
+  final String action;
+  
+  // Edit fields
+  final List<String> paylistSongs;
+  final String playlistId;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -23,11 +26,12 @@ class NewPlaylistScreen extends ConsumerStatefulWidget {
 }
 
 class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
-  final Map<String, bool> _selectedSongs = {};
+  late final Map<String, bool> _selectedSongs;
 
   @override
   void initState() {
     super.initState();
+    _selectedSongs = {for (var songId in widget.paylistSongs) songId: true};
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(newPlaylistViewModelProvider('').notifier).setAvailableSongs();
     });
@@ -39,7 +43,7 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: widget.origin == 'edit'
+        title: widget.action == 'edit'
             ? const Text('Edit Playlist')
             : const Text('Create Playlist'),
       ),
@@ -103,6 +107,16 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
 
   void _onSaveButtonPressed() {
     final state = ref.read(newPlaylistViewModelProvider('').notifier);
+    final selectedSongs = _selectedSongs.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
+    if (widget.action == 'edit') {
+      state.updateSongs(widget.playlistId, selectedSongs);
+      if (context.mounted) context.pushNamed(PlaylistScreen.name);
+      return;
+    }
 
     showDialog(
       context: context,
@@ -140,8 +154,7 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
                     }
                   });
                 } else {
-                  await state.savePlaylist(
-                      playlistName, _selectedSongs.keys.toList());
+                  state.savePlaylist(playlistName, selectedSongs);
                   if (context.mounted) context.pushNamed(PlaylistScreen.name);
                 }
               },

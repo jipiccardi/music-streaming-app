@@ -4,6 +4,7 @@ import 'package:music_app/presentation/utils/base_screen_state.dart';
 class PlaylistsState {
   final BaseScreenState screenState;
   final List<Playlist> playlists;
+  
 
   const PlaylistsState({
     this.screenState = const BaseScreenState.idle(),

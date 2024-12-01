@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_app/data/models/playlist.dart';
 import 'package:music_app/data/repositories/providers.dart';
@@ -33,9 +35,6 @@ class NewPlaylistNotifier
     }
   }
 
-  // TODO i guess i should have a state that is a map of Song and bool... or not
-  // think it
-
   Future<void> savePlaylist(String playlistName, List<String> songsIds) async {
     state = state.copyWith(screenState: const BaseScreenState.loading());
 
@@ -46,6 +45,23 @@ class NewPlaylistNotifier
         songs: songsIds,
       ));
       state = state.copyWith(screenState: const BaseScreenState.idle());
+    } catch (error) {
+      state = state.copyWith(
+        screenState: BaseScreenState.error(error.toString()),
+      );
+    }
+  }
+
+  Future<void> updateSongs(String id, List<String> songs) async {
+    state = state.copyWith(
+      screenState: const BaseScreenState.loading(),
+    );
+
+    try {
+      await playlistRepository.updateSongs(id, songs);
+      state = state.copyWith(
+        screenState: const BaseScreenState.idle(),
+      );
     } catch (error) {
       state = state.copyWith(
         screenState: BaseScreenState.error(error.toString()),

@@ -38,9 +38,23 @@ class PlaylistsNotifier extends Notifier<PlaylistsState> {
       await playlistsRepository.removePlaylist(id);
       state = state.copyWith(
         screenState: const BaseScreenState.idle(),
-        playlists: state.playlists
-            .where((playlist) => playlist.id != id)
-            .toList(),
+      );
+    } catch (error) {
+      state = state.copyWith(
+        screenState: BaseScreenState.error(error.toString()),
+      );
+    }
+  }
+
+  Future<void> renamePlaylist(String id, String newName) async {
+    state = state.copyWith(
+      screenState: const BaseScreenState.loading(),
+    );
+
+    try {
+      await playlistsRepository.renamePlaylist(id, newName);
+      state = state.copyWith(
+        screenState: const BaseScreenState.idle(),
       );
     } catch (error) {
       state = state.copyWith(

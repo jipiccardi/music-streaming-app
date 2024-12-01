@@ -47,7 +47,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
               icon: const FaIcon(FontAwesomeIcons.plus, size: 30),
               onPressed: () {
                 context.pushNamed(NewPlaylistScreen.name,
-                    pathParameters: {'origin': 'new'});
+                    queryParameters: {'action': 'create'});
               },
             ),
           ),
@@ -59,13 +59,12 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             child: state.screenState.when(
               idle: () {
                 return _Playlist(
-                  playlists: state.playlists,
-                  onLongPress: (id) => _onPlaylistLongPress(context, id),
-                );
+                    playlists: state.playlists,
+                    onLongPress: (playlist) =>
+                        _onPlaylistLongPress(context, playlist));
               },
               loading: () => const Center(
-                child: CircularProgressIndicator(
-                ),
+                child: CircularProgressIndicator(),
               ),
               error: (error) {
                 log('Error: $error');
@@ -98,7 +97,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
     );
   }
 
-  void _onPlaylistLongPress(BuildContext context, String playlistId) {
+  void _onPlaylistLongPress(BuildContext context, Playlist playlist) {
     final state = ref.read(playlistListViewModelProvider.notifier);
 
     showModalBottomSheet(
@@ -111,10 +110,59 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.edit),
-                title: const Text('Add/Remove Songs'),
+                title: const Text('Rename'),
                 onTap: () {
                   Navigator.of(context).pop();
-                  // Handle edit playlist
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      final TextEditingController controller =
+                          TextEditingController(text: playlist.name);
+                      return AlertDialog(
+                        title: const Text('Rename Playlist'),
+                        content: TextField(
+                          controller: controller,
+                          decoration: const InputDecoration(
+                            hintText: 'Enter new playlist name',
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              final newName = controller.text.trim();
+                              if (newName.isNotEmpty) {
+                                if (context.mounted) {
+                                  state.renamePlaylist(
+                                      playlist.id!, controller.text);
+                                  state.fetchPlaylists();
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                }
+                              }
+                            },
+                            child: const Text('Rename'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.check_box),
+                title: const Text('Add/Remove Songs'),
+                onTap: () {
+                  context.pushNamed(NewPlaylistScreen.name,
+                      queryParameters: {'action': 'edit', 'id': playlist.id!},
+                      extra: playlist.songs);
+                  Navigator.of(context).pop();
                 },
               ),
               ListTile(
@@ -146,7 +194,8 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                           ),
                           TextButton(
                             onPressed: () async {
-                              await state.deletePlaylist(playlistId);
+                              state.deletePlaylist(playlist.id!);
+                              state.fetchPlaylists();
                               if (context.mounted) Navigator.of(context).pop();
                             },
                             child: const Text('Delete'),
@@ -179,7 +228,7 @@ class _Playlist extends StatelessWidget {
   });
 
   final List<Playlist> playlists;
-  final Function(String) onLongPress;
+  final Function(Playlist) onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +253,7 @@ class _Playlist extends StatelessWidget {
               return PlaylistItem(
                 playlist: playlist,
                 onTap: () {},
-                onLongPress: () => onLongPress(playlist.id!),
+                onLongPress: () => onLongPress(playlist),
               );
             },
           ),

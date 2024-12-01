@@ -30,10 +30,12 @@ final appRouter = GoRouter(
       builder: (context, state) => const PlaylistScreen(),
     ),
     GoRoute(
-      path: '/new-playlist/:origin',
+      path: '/playlist/new-edit',
       name: NewPlaylistScreen.name,
       builder: (context, state) => NewPlaylistScreen(
-        origin: state.pathParameters['origin'] ?? '',
+        action: state.uri.queryParameters['action'] ?? '',
+        playlistId: state.uri.queryParameters['id'] ?? '',
+        paylistSongs: state.extra != null ? state.extra as List<String> : [],
       ),
     )
   ],
