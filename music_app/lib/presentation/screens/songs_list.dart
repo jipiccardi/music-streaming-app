@@ -51,9 +51,7 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
                 );
               },
               loading: () => const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
+                child: CircularProgressIndicator(),
               ),
               error: (error) {
                 log('Error: $error');
@@ -75,7 +73,6 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
               ),
             ],
             currentIndex: 0,
-            selectedItemColor: Colors.white, // Material Design color
             onTap: (index) {
               if (index == 1) {
                 context.pushReplacementNamed(PlaylistScreen.name);

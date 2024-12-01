@@ -13,28 +13,30 @@ class SongItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(song.title, style: const TextStyle(fontSize: 20)),
-      onTap: () => onTap?.call(),
-      leading: song.coverArt != null
-          ? FadeInImage.assetNetwork(
-              placeholder: 'assets/images/default_art_cover.png',
-              image: song.coverArt!,
-              width: 30,
-              height: 30,
-              imageErrorBuilder: (context, error, stackTrace) {
-                return Image.asset(
+    return Card(
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
+        child: ListTile(
+          title: Text(song.title, style: const TextStyle(fontSize: 20)),
+          onTap: () => onTap?.call(),
+          leading: song.coverArt != null
+              ? FadeInImage.assetNetwork(
+                  placeholder: 'assets/images/default_art_cover.png',
+                  image: song.coverArt!,
+                  width: 30,
+                  height: 30,
+                  imageErrorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/images/default_art_cover.png',
+                      width: 30,
+                      height: 30,
+                    );
+                  },
+                )
+              : Image.asset(
                   'assets/images/default_art_cover.png',
                   width: 30,
                   height: 30,
-                );
-              },
-            )
-          : Image.asset(
-              'assets/images/default_art_cover.png',
-              width: 30,
-              height: 30,
-            ),
-    );
+                ),
+        ));
   }
 }

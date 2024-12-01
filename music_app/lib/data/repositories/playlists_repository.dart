@@ -4,7 +4,7 @@ import 'package:music_app/services/firestore_database_service.dart';
 abstract interface class PlaylistsRepository {
   Future<List<Playlist>> getAllPlaylists();
   Future<void> removePlaylist(String id);
-  Future<Playlist> addPlaylist(Playlist playlist);
+  Future<void> addPlaylist(Playlist playlist);
 }
 
 class FirebasePlaylistsRepository implements PlaylistsRepository {
@@ -25,17 +25,12 @@ class FirebasePlaylistsRepository implements PlaylistsRepository {
   }
 
   @override
-  Future<Playlist> addPlaylist(Playlist playlist) async {
-    final docRef = await _firestore.collection('playlists').add({
+  Future<void> addPlaylist(Playlist playlist) async {
+    await _firestore.collection('playlists').add({
       'userId': playlist.userId,
       'name': playlist.name,
       'coverArt': playlist.coverArt,
       'songs': playlist.songs,
     });
-
-    final docSnapshot = await docRef.get();
-
-    return Playlist.fromFirestore(
-        docSnapshot.data() as Map<String, dynamic>, docSnapshot.id);
   }
 }

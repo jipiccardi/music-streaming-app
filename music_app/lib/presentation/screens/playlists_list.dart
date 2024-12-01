@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:music_app/data/models/playlist.dart';
+import 'package:music_app/presentation/screens/new_playlist.dart';
 import 'package:music_app/presentation/screens/songs_list.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
@@ -45,7 +46,8 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             child: IconButton(
               icon: const FaIcon(FontAwesomeIcons.plus, size: 30),
               onPressed: () {
-                // TODO
+                context.pushNamed(NewPlaylistScreen.name,
+                    pathParameters: {'origin': 'new'});
               },
             ),
           ),
@@ -63,7 +65,6 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
               },
               loading: () => const Center(
                 child: CircularProgressIndicator(
-                  color: Colors.white,
                 ),
               ),
               error: (error) {
@@ -86,7 +87,6 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
               ),
             ],
             currentIndex: 1,
-            selectedItemColor: Colors.white, // Material Design color
             onTap: (index) {
               if (index == 0) {
                 context.pushReplacementNamed(SongsListScreen.name);
@@ -111,7 +111,15 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.edit),
-                title: const Text('Edit'),
+                title: const Text('Add/Remove Songs'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  // Handle edit playlist
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.image),
+                title: const Text('Add Cover'),
                 onTap: () {
                   Navigator.of(context).pop();
                   // Handle edit playlist
@@ -119,7 +127,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.delete),
-                title: const Text('Delete'),
+                title: const Text('Delete Playlist'),
                 onTap: () {
                   Navigator.of(context).pop();
                   showDialog(
@@ -196,7 +204,7 @@ class _Playlist extends StatelessWidget {
               return PlaylistItem(
                 playlist: playlist,
                 onTap: () {},
-                onLongPress: () => onLongPress(playlist.id),
+                onLongPress: () => onLongPress(playlist.id!),
               );
             },
           ),

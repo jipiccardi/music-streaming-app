@@ -57,9 +57,7 @@ class _SongPlayerScreenState extends ConsumerState<SongPlayerScreen> {
           );
         },
         loading: () => const Center(
-          child: CircularProgressIndicator(
-            color: Colors.white,
-          ),
+          child: CircularProgressIndicator(),
         ),
         error: (error) => Center(
           child: Text('Error: $error'),
@@ -204,7 +202,6 @@ class _SongPlayer extends StatelessWidget {
                     child: const FaIcon(
                       FontAwesomeIcons.arrowRotateLeft,
                       size: 30,
-                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -215,7 +212,6 @@ class _SongPlayer extends StatelessWidget {
                     child: const FaIcon(
                       FontAwesomeIcons.arrowRotateRight,
                       size: 30,
-                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -229,7 +225,7 @@ class _SongPlayer extends StatelessWidget {
                       previousSong(song.id);
                     },
                     child:
-                        const FaIcon(FontAwesomeIcons.backwardStep, size: 35, color: Colors.white),
+                        const FaIcon(FontAwesomeIcons.backwardStep, size: 35),
                   ),
                   const SizedBox(width: 30),
                   ElevatedButton(
@@ -237,11 +233,11 @@ class _SongPlayer extends StatelessWidget {
                       playAndStopSong(song);
                     },
                     child: FaIcon(
-                        isPlaying
-                            ? FontAwesomeIcons.pause
-                            : FontAwesomeIcons.play,
-                        size: 50,
-                        color: Colors.white),
+                      isPlaying
+                          ? FontAwesomeIcons.pause
+                          : FontAwesomeIcons.play,
+                      size: 50,
+                    ),
                   ),
                   const SizedBox(width: 30),
                   ElevatedButton(
@@ -251,7 +247,6 @@ class _SongPlayer extends StatelessWidget {
                     child: const FaIcon(
                       FontAwesomeIcons.forwardStep,
                       size: 35,
-                      color: Colors.white,
                     ),
                   ),
                 ],
