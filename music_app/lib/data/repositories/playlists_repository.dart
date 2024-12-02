@@ -7,10 +7,11 @@ abstract interface class PlaylistsRepository {
   Future<void> addPlaylist(Playlist playlist);
   Future<void> renamePlaylist(String id, String name);
   Future<void> updateSongs(String id, List<String> songs);
+  Future<void> updateCoverArt(String id, String coverArt);
 }
 
 class FirebasePlaylistsRepository implements PlaylistsRepository {
-  final _firestore = FirestoreDatabase().firestore;
+  final _firestore = FirestoreDatabaseService().firestore;
 
   @override
   Future<List<Playlist>> getAllPlaylists() async {
@@ -44,5 +45,13 @@ class FirebasePlaylistsRepository implements PlaylistsRepository {
   @override
   Future<void> updateSongs(String id, List<String> songs) async {
     await _firestore.collection('playlists').doc(id).update({'songs': songs});
+  }
+
+  @override
+  Future<void> updateCoverArt(String id, String coverArt) async {
+    await _firestore
+        .collection('playlists')
+        .doc(id)
+        .update({'coverArt': coverArt});
   }
 }

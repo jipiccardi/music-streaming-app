@@ -12,10 +12,13 @@ class NewPlaylistScreen extends ConsumerStatefulWidget {
   static const name = 'NewPlaylistScreen';
 
   const NewPlaylistScreen(
-      {super.key, required this.action, required this.paylistSongs, required this.playlistId});
+      {super.key,
+      required this.action,
+      required this.paylistSongs,
+      required this.playlistId});
 
   final String action;
-  
+
   // Edit fields
   final List<String> paylistSongs;
   final String playlistId;
@@ -105,7 +108,7 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
     );
   }
 
-  void _onSaveButtonPressed() {
+  void _onSaveButtonPressed() async {
     final state = ref.read(newPlaylistViewModelProvider('').notifier);
     final selectedSongs = _selectedSongs.entries
         .where((entry) => entry.value)
@@ -114,11 +117,11 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
 
     if (widget.action == 'edit') {
       state.updateSongs(widget.playlistId, selectedSongs);
-      if (context.mounted) context.pushNamed(PlaylistScreen.name);
+      Navigator.of(context).pop();
       return;
     }
 
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         String playlistName = '';
@@ -155,7 +158,8 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
                   });
                 } else {
                   state.savePlaylist(playlistName, selectedSongs);
-                  if (context.mounted) context.pushNamed(PlaylistScreen.name);
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 }
               },
             ),

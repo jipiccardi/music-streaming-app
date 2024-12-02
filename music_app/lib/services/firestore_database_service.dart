@@ -2,15 +2,15 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirestoreDatabase {
-  static final FirestoreDatabase _instance = FirestoreDatabase._internal();
+class FirestoreDatabaseService {
+  static final FirestoreDatabaseService _instance = FirestoreDatabaseService._internal();
   final FirebaseFirestore _firestore;
 
-  factory FirestoreDatabase() {
+  factory FirestoreDatabaseService() {
     return _instance;
   }
 
-  FirestoreDatabase._internal() : _firestore = FirebaseFirestore.instance {
+  FirestoreDatabaseService._internal() : _firestore = FirebaseFirestore.instance{
     log('FirestoreDatabase instance created');
   }
 

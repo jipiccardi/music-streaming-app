@@ -7,7 +7,7 @@ abstract interface class SongsRepository {
 }
 
 class FirebaseSongsRepository implements SongsRepository {
-  final _firestore = FirestoreDatabase().firestore;
+  final _firestore = FirestoreDatabaseService().firestore;
 
 
   @override

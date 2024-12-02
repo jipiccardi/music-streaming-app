@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'dart:io';
+import 'package:image/image.dart' as img;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,10 +8,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:music_app/data/models/playlist.dart';
 import 'package:music_app/presentation/screens/new_playlist.dart';
+import 'package:music_app/presentation/screens/song_player.dart';
 import 'package:music_app/presentation/screens/songs_list.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/widgets/playlist_item.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PlaylistScreen extends ConsumerStatefulWidget {
   static const name = 'PlaylistScreen';
@@ -59,9 +63,12 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             child: state.screenState.when(
               idle: () {
                 return _Playlist(
-                    playlists: state.playlists,
-                    onLongPress: (playlist) =>
-                        _onPlaylistLongPress(context, playlist));
+                  playlists: state.playlists,
+                  onLongPress: (playlist) =>
+                      _onPlaylistLongPress(context, playlist),
+                  onPlaylistPress: (songsIds) =>
+                      _onPlaylistPress(context, songsIds),
+                );
               },
               loading: () => const Center(
                 child: CircularProgressIndicator(),
@@ -168,9 +175,18 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
               ListTile(
                 leading: const Icon(Icons.image),
                 title: const Text('Add Cover'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  // Handle edit playlist
+                onTap: () async {
+                  final pickedImg = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (pickedImg != null) {
+                    state.addPlaylistCover(
+                        playlist.id!,
+                        playlist.coverArt == null ? '' : playlist.coverArt!,
+                        File(pickedImg.path));
+                  }
+
+                  if (context.mounted) Navigator.of(context).pop();
                 },
               ),
               ListTile(
@@ -219,15 +235,42 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
       },
     );
   }
+
+  void _onPlaylistPress(BuildContext context, List<String> songsIds) async {
+    final playerNotifier = ref.read(songPlayerViewModelProvider('').notifier);
+    if (songsIds.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+            const SnackBar(
+                duration: Duration(milliseconds: 500),
+                content: Text('Playlist with no items')),
+          )
+          .closed
+          .then((reason) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        }
+      });
+      return;
+    }
+    await context
+        .pushNamed(SongPlayerScreen.name,
+            pathParameters: {'id': songsIds[0]}, extra: songsIds)
+        .then((_) {
+      playerNotifier.stopSong();
+    });
+  }
 }
 
 class _Playlist extends StatelessWidget {
   const _Playlist({
     required this.playlists,
     required this.onLongPress,
+    required this.onPlaylistPress,
   });
 
   final List<Playlist> playlists;
+  final Function(List<String>) onPlaylistPress;
   final Function(Playlist) onLongPress;
 
   @override
@@ -252,7 +295,7 @@ class _Playlist extends StatelessWidget {
               final playlist = playlists[index];
               return PlaylistItem(
                 playlist: playlist,
-                onTap: () {},
+                onTap: () => onPlaylistPress(playlist.songs!),
                 onLongPress: () => onLongPress(playlist),
               );
             },
