@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:music_app/core/app_router.dart';
+import 'package:music_app/presentation/screens/songs_list.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
 
@@ -73,6 +77,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           isRepeatPasswordVisible: state.isRepeatPasswordVisible,
           toggleRepeatPasswordVisibility:
               notifier.toggleRepeatPasswordVisibility,
+          registerNewUser: _registerNewUser,
         ),
         loading: () => const Center(
           child: CircularProgressIndicator(),
@@ -82,6 +87,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void _registerNewUser(String email, String password) async {
+    final state = ref.read(signUpViewModelProvider.notifier);
+    final e = await state.registerNewUser(email, password);
+    if (e != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: const Duration(seconds: 1),
+        content: Text(e.toString().replaceAll('Exception: ', '')),
+      ));
+
+      return;
+    }
+    if (context.mounted) {
+      context.pushReplacementNamed(SongsListScreen.name);
+    }
   }
 }
 
@@ -95,6 +116,7 @@ class _SignUp extends StatelessWidget {
     required this.togglePasswordVisibility,
     required this.isRepeatPasswordVisible,
     required this.toggleRepeatPasswordVisibility,
+    required this.registerNewUser,
   });
 
   final GlobalKey<FormState> formKey;
@@ -103,6 +125,7 @@ class _SignUp extends StatelessWidget {
   final TextEditingController passwordController;
   final TextEditingController repeatPasswordController;
 
+  final void Function(String, String) registerNewUser;
   final void Function() togglePasswordVisibility;
   final void Function() toggleRepeatPasswordVisibility;
 
@@ -200,7 +223,10 @@ class _SignUp extends StatelessWidget {
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (formKey.currentState?.validate() ?? false) {
-
+                      registerNewUser(
+                        emailController.text,
+                        passwordController.text,
+                      );
                     }
                   },
                   child: const Text(
