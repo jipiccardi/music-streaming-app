@@ -210,7 +210,11 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                           ),
                           TextButton(
                             onPressed: () async {
-                              state.deletePlaylist(playlist.id!);
+                              state.deletePlaylist(
+                                  playlist.id!,
+                                  playlist.coverArt == null
+                                      ? ''
+                                      : playlist.coverArt!);
                               state.fetchPlaylists();
                               if (context.mounted) Navigator.of(context).pop();
                             },

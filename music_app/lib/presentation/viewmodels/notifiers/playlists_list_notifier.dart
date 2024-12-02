@@ -11,7 +11,8 @@ class PlaylistsNotifier extends Notifier<PlaylistsState> {
   late final PlaylistsRepository playlistsRepository =
       ref.read(playlistsRepositoryProvider);
 
-  late final FirestoreStorageService firestoreStorage = FirestoreStorageService();
+  late final FirestoreStorageService firestoreStorage =
+      FirestoreStorageService();
 
   @override
   PlaylistsState build() {
@@ -34,12 +35,16 @@ class PlaylistsNotifier extends Notifier<PlaylistsState> {
     }
   }
 
-  Future<void> deletePlaylist(String id) async {
+  Future<void> deletePlaylist(String id, String coverArtURL) async {
     state = state.copyWith(
       screenState: const BaseScreenState.loading(),
     );
 
     try {
+      if (coverArtURL.isNotEmpty) {
+        firestoreStorage.firestore.refFromURL(coverArtURL).delete();
+      }
+
       await playlistsRepository.removePlaylist(id);
       state = state.copyWith(
         screenState: const BaseScreenState.idle(),
@@ -98,7 +103,7 @@ class PlaylistsNotifier extends Notifier<PlaylistsState> {
           playlists: playlists,
         );
       });
-      
+
       state = state.copyWith(
         screenState: const BaseScreenState.idle(),
       );
