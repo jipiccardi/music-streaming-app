@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:music_app/data/models/song.dart';
 import 'package:music_app/presentation/screens/playlists_list.dart';
+import 'package:music_app/presentation/screens/sign_in.dart';
 import 'package:music_app/presentation/screens/song_player.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
@@ -38,6 +39,15 @@ class _SongsListScreenState extends ConsumerState<SongsListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Songs'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await ref.read(songsListViewModelProvider.notifier).logOut();
+              context.pushReplacementNamed(SignInScreen.name);
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [

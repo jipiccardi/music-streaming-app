@@ -1,9 +1,5 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_app/data/models/user.dart';
 import 'package:music_app/data/repositories/providers.dart';
@@ -11,6 +7,8 @@ import 'package:music_app/data/repositories/users_repository.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/states/sign_up_state.dart';
 import 'package:music_app/services/firestore_auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:music_app/main.dart';
 
 class SignUpNotifier extends Notifier<SignUpState> {
   late final UsersRepository usersRepository =
@@ -28,13 +26,14 @@ class SignUpNotifier extends Notifier<SignUpState> {
       final userCredentials = await authService.auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      if (userCredentials.user!.uid.isNotEmpty) {
-        await usersRepository.createUser(AppUser(
-            id: userCredentials.user!.uid,
-            email: userCredentials.user!.email!));
+      await usersRepository.createUser(AppUser(
+          id: userCredentials.user!.uid, email: userCredentials.user!.email!));
 
-        state = state.copyWith(screenState: const BaseScreenState.idle());
-      }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_id', userCredentials.user!.uid);
+      sessionUserId = userCredentials.user!.uid;
+
+      state = state.copyWith(screenState: const BaseScreenState.idle());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         state = state.copyWith(screenState: const BaseScreenState.idle());

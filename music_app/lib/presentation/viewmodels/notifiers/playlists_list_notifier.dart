@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:music_app/main.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 import 'package:music_app/data/repositories/playlists_repository.dart';
@@ -25,7 +26,7 @@ class PlaylistsNotifier extends Notifier<PlaylistsState> {
     );
 
     try {
-      final playlists = await playlistsRepository.getAllPlaylists();
+      final playlists = await playlistsRepository.getAllPlaylistsByUserId(sessionUserId);
       state = state.copyWith(
           screenState: const BaseScreenState.idle(), playlists: playlists);
     } catch (error) {
@@ -96,7 +97,7 @@ class PlaylistsNotifier extends Notifier<PlaylistsState> {
 
         await playlistsRepository.updateCoverArt(id, downloadUrl);
 
-        final playlists = await playlistsRepository.getAllPlaylists();
+        final playlists = await playlistsRepository.getAllPlaylistsByUserId(sessionUserId);
 
         state = state.copyWith(
           screenState: const BaseScreenState.idle(),

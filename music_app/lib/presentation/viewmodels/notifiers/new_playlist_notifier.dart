@@ -5,6 +5,7 @@ import 'package:music_app/data/repositories/songs_repository.dart';
 import 'package:music_app/data/repositories/playlists_repository.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/states/new_playlist_state.dart';
+import 'package:music_app/main.dart';
 
 class NewPlaylistNotifier
     extends AutoDisposeFamilyNotifier<NewPlaylistState, String> {
@@ -38,7 +39,7 @@ class NewPlaylistNotifier
 
     try {
       await playlistRepository.addPlaylist(Playlist(
-        userId: '1',
+        userId: sessionUserId,
         name: playlistName,
         songs: songsIds,
       ));

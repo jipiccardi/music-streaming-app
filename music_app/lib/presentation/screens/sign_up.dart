@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:music_app/core/app_router.dart';
+import 'package:music_app/presentation/screens/sign_in.dart';
 import 'package:music_app/presentation/screens/songs_list.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
 import 'package:music_app/presentation/viewmodels/providers.dart';
@@ -96,11 +97,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: const Duration(seconds: 1),
         content: Text(e.toString().replaceAll('Exception: ', '')),
+        backgroundColor: Colors.red,
       ));
-
       return;
     }
     if (context.mounted) {
+      _emailController.clear();
+      _passwordController.clear();
+      _repeatPasswordController.clear();
       context.pushReplacementNamed(SongsListScreen.name);
     }
   }
@@ -155,6 +159,10 @@ class _SignUp extends StatelessWidget {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your email';
                   }
+
+                  if (!value.contains('@')) {
+                    return 'Please enter a valid email';
+                  }
                   return null;
                 },
               ),
@@ -180,6 +188,11 @@ class _SignUp extends StatelessWidget {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your password';
                   }
+
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+
                   return null;
                 },
               ),
@@ -210,6 +223,22 @@ class _SignUp extends StatelessWidget {
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 15),
+              TextButton(
+                onPressed: () {
+                  emailController.clear();
+                  passwordController.clear();
+                  repeatPasswordController.clear();
+                  context.pushReplacementNamed(SignInScreen.name);
+                },
+                child: Text(
+                  'Already have an account? Sign In',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 15,
+                  ),
+                ),
               ),
               const SizedBox(height: 40),
               Container(
