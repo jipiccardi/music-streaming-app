@@ -48,6 +48,9 @@ class SignInNotifier extends Notifier<SignInState> {
     return null;
   }
 
+  void resetPasswordLInk(String email) {
+    authService.auth.sendPasswordResetEmail(email: email);
+  }
   void updateEmail(String email) {
     state = state.copyWith(email: email);
   }

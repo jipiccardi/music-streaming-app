@@ -146,6 +146,11 @@ class _SignUp extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Image.asset(
+                'assets/images/logo.jpg',
+                height: 100,
+              ),
+              const SizedBox(height: 50),
               TextFormField(
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,

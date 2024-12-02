@@ -1,10 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:music_app/core/app_router.dart';
 import 'package:music_app/presentation/screens/sign_up.dart';
 import 'package:music_app/presentation/screens/songs_list.dart';
 import 'package:music_app/presentation/utils/base_screen_state.dart';
@@ -68,6 +66,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           togglePasswordVisibility: notifier.togglePasswordVisibility,
           isPasswordVisible: state.isPasswordVisible,
           onLogin: _onLogin,
+          onForgotPassword: _onForgotPassword,
         ),
         loading: () => const Center(
           child: CircularProgressIndicator(),
@@ -99,6 +98,57 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       context.pushReplacementNamed(SongsListScreen.name);
     }
   }
+
+  void _onForgotPassword() async{
+    final state = ref.read(signInViewModelProvider.notifier);
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String email = '';
+        return AlertDialog(
+          title: const Text('Password reset link'),
+          content: TextField(
+            onChanged: (value) {
+              email = value;
+            },
+            decoration: const InputDecoration(hintText: "Enter your email"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Send'),
+              onPressed: () async {
+                if (email.isEmpty) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(
+                        const SnackBar(
+                            duration: Duration(milliseconds: 500),
+                            content: Text('Email cannot be empty')),
+                      )
+                      .closed
+                      .then((reason) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                    }
+                  });
+                } else {
+                  state.resetPasswordLInk(email);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      }
+    );
+
+    
+  }
 }
 
 class _SignIn extends StatelessWidget {
@@ -109,6 +159,7 @@ class _SignIn extends StatelessWidget {
     required this.togglePasswordVisibility,
     required this.isPasswordVisible,
     required this.onLogin,
+    required this.onForgotPassword,
   });
 
   final GlobalKey<FormState> formKey;
@@ -117,6 +168,7 @@ class _SignIn extends StatelessWidget {
   final TextEditingController passwordController;
 
   final void Function(String, String) onLogin;
+  final void Function() onForgotPassword;
   final void Function() togglePasswordVisibility;
 
   final bool isPasswordVisible;
@@ -131,6 +183,11 @@ class _SignIn extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Image.asset(
+                'assets/images/logo.jpg',
+                height: 100,
+              ),
+              const SizedBox(height: 50),
               TextFormField(
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -182,7 +239,9 @@ class _SignIn extends StatelessWidget {
               const SizedBox(height: 15),
               const SizedBox(height: 15),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  onForgotPassword();
+                },
                 child: Text(
                   'Forgot your password?',
                   style: TextStyle(
