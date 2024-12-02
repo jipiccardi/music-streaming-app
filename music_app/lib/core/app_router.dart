@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:music_app/presentation/screens/new_playlist.dart';
+import 'package:music_app/presentation/screens/sign_up.dart';
 import 'package:music_app/presentation/screens/song_player.dart';
 import '../presentation/screens/playlists_list.dart';
 import '../presentation/screens/songs_list.dart';
@@ -8,9 +9,8 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
         path: '/',
-        redirect: (context, state) {
-          return '/songs';
-        }),
+        name: SignUpScreen.name,
+        builder: (context, state) => const SignUpScreen()),
     GoRoute(
       path: '/songs',
       name: SongsListScreen.name,
