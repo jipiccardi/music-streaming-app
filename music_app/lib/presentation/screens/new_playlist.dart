@@ -46,6 +46,12 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.pushReplacementNamed(PlaylistScreen.name);
+          },
+        ),
         title: widget.action == 'edit'
             ? const Text('Edit Playlist')
             : const Text('Create Playlist'),
@@ -117,7 +123,7 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
 
     if (widget.action == 'edit') {
       state.updateSongs(widget.playlistId, selectedSongs);
-      Navigator.of(context).pop();
+      context.pushReplacementNamed(PlaylistScreen.name);
       return;
     }
 
@@ -158,8 +164,7 @@ class _NewPlaylistScreenState extends ConsumerState<NewPlaylistScreen> {
                   });
                 } else {
                   state.savePlaylist(playlistName, selectedSongs);
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  context.pushReplacementNamed(PlaylistScreen.name);
                 }
               },
             ),

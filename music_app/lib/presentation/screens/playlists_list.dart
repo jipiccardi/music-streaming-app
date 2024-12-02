@@ -50,7 +50,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             child: IconButton(
               icon: const FaIcon(FontAwesomeIcons.plus, size: 30),
               onPressed: () {
-                context.pushNamed(NewPlaylistScreen.name,
+                context.pushReplacementNamed(NewPlaylistScreen.name,
                     queryParameters: {'action': 'create'});
               },
             ),
@@ -166,7 +166,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                 leading: const Icon(Icons.check_box),
                 title: const Text('Add/Remove Songs'),
                 onTap: () {
-                  context.pushNamed(NewPlaylistScreen.name,
+                  context.pushReplacementNamed(NewPlaylistScreen.name,
                       queryParameters: {'action': 'edit', 'id': playlist.id!},
                       extra: playlist.songs);
                   Navigator.of(context).pop();
