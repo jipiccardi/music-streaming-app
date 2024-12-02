@@ -14,11 +14,24 @@ class SignUpNotifier extends Notifier<SignUpState> {
     return const SignUpState();
   }
 
-  void togglePasswordVisibility() {
-    state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
+  void updateEmail(String email) {
+    state = state.copyWith(email: email);
   }
 
   void updatePassword(String password) {
     state = state.copyWith(password: password);
+  }
+
+  void updateRepeatPassword(String repeatPassword) {
+    state = state.copyWith(repeatPassword: repeatPassword);
+  }
+
+  void togglePasswordVisibility() {
+    state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
+  }
+
+  void toggleRepeatPasswordVisibility() {
+    state =
+        state.copyWith(isRepeatPasswordVisible: !state.isRepeatPasswordVisible);
   }
 }
